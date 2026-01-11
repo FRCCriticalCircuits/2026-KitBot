@@ -52,25 +52,25 @@ public class LightsSubsystem extends SubsystemBase {
         break;
 
       case INTAKING:
-        device.leds.SetAnimation(Animation.Chase)
+        device.leds.SetAnimation(Animation.Blink)
           .ForZone(MATRIX_ZONE)
-          .WithColor(new Color(new Color8Bit(0, 255, 0)))
-          .WithDelay(Units.Milliseconds.of(40))
+          .WithColor(new Color(new Color8Bit(255, 165, 0)))
+          .WithDelay(Units.Milliseconds.of(100))
           .Reverse(false)
           .RunOnce(false);
         break;
 
       case SPINUP:
-        device.leds.SetAnimation(Animation.Chase)
+        device.leds.SetAnimation(Animation.GrowingBreathe)
           .ForZone(MATRIX_ZONE)
-          .WithColor(new Color(new Color8Bit(255, 180, 0)))
-          .WithDelay(Units.Milliseconds.of(35))
+          .WithColor(new Color(new Color8Bit(255, 0, 0)))
+          .WithDelay(Units.Milliseconds.of(3.90625))
           .Reverse(true)
           .RunOnce(false);
         break;
 
       case LAUNCHING:
-        device.leds.SetAnimation(Animation.Chase)
+        device.leds.SetAnimation(Animation.Fire)
           .ForZone(MATRIX_ZONE)
           .WithColor(new Color(new Color8Bit(255, 0, 255)))
           .WithDelay(Units.Milliseconds.of(25))
