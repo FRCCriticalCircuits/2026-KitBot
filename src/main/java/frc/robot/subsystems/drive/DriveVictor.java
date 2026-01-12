@@ -34,6 +34,11 @@ public class DriveVictor implements DriveIO {
         // Make followers match their leader inversion
         leftFollower.setInverted(leftLeader.getInverted());
         rightFollower.setInverted(rightLeader.getInverted());
+
+        leftLeader.setSafetyEnabled(false);
+        rightLeader.setSafetyEnabled(false);
+        leftFollower.setSafetyEnabled(false);
+        rightFollower.setSafetyEnabled(false);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class DriveVictor implements DriveIO {
         leftLeader.set(left);
         rightLeader.set(right);
 
-        leftLeader.feed();
-        rightLeader.feed();
+        // leftLeader.feed();
+        // rightLeader.feed();
     }
 }
