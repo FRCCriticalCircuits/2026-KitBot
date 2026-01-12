@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import static frc.robot.Constants.OperatorConstants.*;
-import static frc.robot.Constants.FuelConstants.*;
-import frc.robot.commands.Autos;
-import frc.robot.subsystems.CANDriveSubsystem;
-import frc.robot.subsystems.CANFuelSubsystem;
+
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveSim;
+import frc.robot.subsystems.drive.DriveVictor;
 import frc.robot.subsystems.LightsSubsystem;
 
 /**
@@ -26,17 +26,13 @@ import frc.robot.subsystems.LightsSubsystem;
 public class RobotContainer {
     // The robot's subsystems
     private static final LightsSubsystem lightsSubsystem = new LightsSubsystem();
-    private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
-    private final CANFuelSubsystem ballSubsystem = new CANFuelSubsystem(lightsSubsystem);
+    private final Drive driveSubsystem = new Drive(
+        Robot.isReal() ? new DriveVictor() : new DriveSim()
+    );
 
   // The driver's controller
-  private final CommandXboxController driverController = new CommandXboxController(
-      DRIVER_CONTROLLER_PORT);
-
-  // The operator's controller
-  private final CommandXboxController operatorController = new CommandXboxController(
-      OPERATOR_CONTROLLER_PORT);
-
+  private final CommandXboxController driverController = new CommandXboxController(DRIVER_CONTROLLER_PORT);
+      
   // The autonomous chooser
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -46,10 +42,20 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
+    lightsSubsystem.apply();
+
+    // Default command, normal field-relative drive
+    driveSubsystem.setDefaultCommand(
+        driveSubsystem.tankDrive(
+            () -> -driverController.getLeftY(),
+            () -> -driverController.getRightX()
+        )
+    );
+
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Autonomous", Autos.exampleAuto(driveSubsystem, ballSubsystem));
+    autoChooser.setDefaultOption("Autonomous", new Command(){});
   }
 
   /**
@@ -64,32 +70,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
-    // While the left bumper on operator controller is held, intake Fuel
-    operatorController.leftBumper()
-        .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.intake(), () -> ballSubsystem.stop()));
-    // While the right bumper on the operator controller is held, spin up for 1
-    // second, then launch fuel. When the button is released, stop.
-    operatorController.rightBumper()
-        .whileTrue(ballSubsystem.spinUpCommand().withTimeout(SPIN_UP_SECONDS)
-            .andThen(ballSubsystem.launchCommand())
-            .finallyDo(() -> ballSubsystem.stop()));
-    // While the A button is held on the operator controller, eject fuel back out
-    // the intake
-    operatorController.a()
-        .whileTrue(ballSubsystem.runEnd(() -> ballSubsystem.eject(), () -> ballSubsystem.stop()));
-
-    // Set the default command for the drive subsystem to the command provided by
-    // factory with the values provided by the joystick axes on the driver
-    // controller. The Y axis of the controller is inverted so that pushing the
-    // stick away from you (a negative value) drives the robot forwards (a positive
-    // value). The X-axis is also inverted so a positive value (stick to the right)
-    // results in clockwise rotation (front of the robot turning right). Both axes
-    // are also scaled down so the rotation is more easily controllable.
-    driveSubsystem.setDefaultCommand(
-        driveSubsystem.driveArcade(
-            () -> -driverController.getLeftY() * DRIVE_SCALING,
-            () -> -driverController.getRightX() * ROTATION_SCALING));
   }
 
   /**
