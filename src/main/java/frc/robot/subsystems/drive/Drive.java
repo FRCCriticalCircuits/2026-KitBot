@@ -9,7 +9,7 @@ import frc.robot.subsystems.drive.DriveIO.DriveIOInputs;
 
 public class Drive extends SubsystemBase{
     private DriveIO io;
-    private DriveIOInputs driveInputs;
+    private DriveIOInputs driveInputs = new DriveIOInputs();
 
     public Drive(
         DriveIO io

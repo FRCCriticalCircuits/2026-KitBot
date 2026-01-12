@@ -14,7 +14,6 @@ import static frc.robot.Constants.OperatorConstants.*;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveSim;
 import frc.robot.subsystems.drive.DriveVictor;
-import frc.robot.subsystems.LightsSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -25,7 +24,7 @@ import frc.robot.subsystems.LightsSubsystem;
  */
 public class RobotContainer {
     // The robot's subsystems
-    private static final LightsSubsystem lightsSubsystem = new LightsSubsystem();
+    // private static final LightsSubsystem lightsSubsystem = new LightsSubsystem();
     private final Drive driveSubsystem = new Drive(
         Robot.isReal() ? new DriveVictor() : new DriveSim()
     );
@@ -42,15 +41,14 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    lightsSubsystem.apply();
-
-    // Default command, normal field-relative drive
     driveSubsystem.setDefaultCommand(
         driveSubsystem.tankDrive(
             () -> -driverController.getLeftY(),
-            () -> -driverController.getRightX()
+            () -> driverController.getRightX()
         )
     );
+
+    // lightsSubsystem.apply();
 
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
