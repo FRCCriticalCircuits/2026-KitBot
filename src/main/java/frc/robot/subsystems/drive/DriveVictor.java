@@ -28,8 +28,8 @@ public class DriveVictor implements DriveIO {
         // Inversion:
         // Typical convention: invert ONE side so + output drives both sides forward.
         // Match your old code: left side inverted true.
-        leftLeader.setInverted(true);
-        rightLeader.setInverted(false);
+        leftLeader.setInverted(false);
+        rightLeader.setInverted(true);
 
         // Make followers match their leader inversion
         leftFollower.setInverted(leftLeader.getInverted());
